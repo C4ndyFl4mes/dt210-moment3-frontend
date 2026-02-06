@@ -4,6 +4,7 @@ import type { IValidationError } from "../../interfaces/IValidationError";
 import AuthService from "../../services/AuthService";
 import type { IError } from "../../interfaces/IError";
 import type { IUser } from "../../interfaces/user/IUser";
+import userStore from "../../stores/UserStore";
 
 export default function AccountForm({ regOrLogin }: { regOrLogin: boolean }) {
     const [errors, setErrors] = useState<IValidationError>({} as IValidationError);
@@ -24,11 +25,11 @@ export default function AccountForm({ regOrLogin }: { regOrLogin: boolean }) {
                     setApiError(data);
                 } else {
                     data as IUser;
-                    console.log("Login: " + data.username);
                     setUsername("");
                     setPassword("");
                     setErrors({} as IValidationError);
                     setApiError(null);
+                    userStore.setUser(data);
                 }
             } else {
                 const data = await AuthService().register({ username, password });
@@ -38,11 +39,11 @@ export default function AccountForm({ regOrLogin }: { regOrLogin: boolean }) {
                     setApiError(data);
                 } else {
                     data as IUser;
-                    console.log("Register: " + data.username);
                     setUsername("");
                     setPassword("");
                     setErrors({} as IValidationError);
                     setApiError(null);
+                    userStore.setUser(data);
                 }
             }
         }

@@ -75,5 +75,19 @@ export default function AuthService() {
         }
     }
 
-    return { register, login, logout, guard };
+    // Hämtar nuvarande inloggade användare.
+    async function getCurrentUser(): Promise<IUser | IError> {
+        try {
+            const res: AxiosResponse<IUser> = await client.get<IUser>("/me", config);
+            return handleSuccess<IUser>(res);
+        } catch (error: unknown) {
+            console.log(error);
+            if ((error as AxiosError).isAxiosError) {
+                return handleAxiosError(error as AxiosError);
+            }
+            return { message: "An error occurred while fetching current user." };
+        }
+    }
+
+    return { register, login, logout, guard, getCurrentUser };
 }
